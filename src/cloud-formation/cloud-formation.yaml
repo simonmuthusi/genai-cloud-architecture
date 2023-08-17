@@ -6,6 +6,17 @@ AWSTemplateFormatVersion: 2010-09-09
 # When private subnets are created, NATing is provided by either an EC2 instance or NAT Gateway based on user selection.
 # The VPC and subnets are exported for use by other stacks.
 
+# Metadata:
+#   # Control the UI display when running this template from the AWS Management Console:
+#   AWS::CloudFormation::Interface:
+#     ParameterGroups:
+#       - Label:
+#           default: "Network Configuration"
+#         Parameters:
+#           - NumberOfAZs
+#           - PrivateSubnets
+#           - NATType
+
 Parameters:
   SecurityGroupDescription:
     Description: Security Group Description
@@ -144,9 +155,10 @@ Resources:
           #!/bin/bash
           yum update -y
           yum install -y httpd
-          systemctl start httpd
+          systemctl restart httpd
           systemctl enable httpd
-          #echo "<h1>Hello from Region us-east-2b</h1>" > /var/www/html/index.html
+          touch /var/www/html/index.html
+          echo "<h1>Hello from Region us-east-2b</h1>" > /var/www/html/index.html
 
   EC2Instance2:
     Type: AWS::EC2::Instance
@@ -161,9 +173,10 @@ Resources:
         Fn::Base64: !Sub | #!/bin/bash
           yum update -y
           yum install -y httpd
-          systemctl start httpd
+          systemctl restart httpd
           systemctl enable httpd
-          #echo "<h1>Hello from Region us-east-2b</h1>" > /var/www/html/index.html
+          touch /var/www/html/index.html
+          echo "<h1>Hello from Region us-east-2b</h1>" > /var/www/html/index.html
 
   # EC2 and ALB Security Groups
   ELBSecurityGroup:
